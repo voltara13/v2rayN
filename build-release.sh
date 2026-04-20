@@ -2,7 +2,7 @@
 set -e
 
 # === Configuration ===
-VERSION="1.0.2"
+VERSION="1.0.3"
 CORE_BIN_REPO="2dust/v2rayN-core-bin"  # Change to your repo if you have custom core-bin
 RELEASE_TAG="v${VERSION}"
 SEVENZ="/c/Program Files/7-Zip/7z.exe"
