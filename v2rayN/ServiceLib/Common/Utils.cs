@@ -983,6 +983,23 @@ public class Utils
         }
     }
 
+    public static string GetHwid()
+    {
+        var hwidPath = Path.Combine(StartupPath(), "hwid");
+        if (File.Exists(hwidPath))
+        {
+            var hwid = File.ReadAllText(hwidPath).Trim();
+            if (hwid.IsNotEmpty())
+            {
+                return hwid;
+            }
+        }
+
+        var newHwid = Guid.NewGuid().ToString("N");
+        File.WriteAllText(hwidPath, newHwid);
+        return newHwid;
+    }
+
     public static string GetBackupPath(string filename)
     {
         var tempPath = Path.Combine(StartupPath(), "guiBackups");

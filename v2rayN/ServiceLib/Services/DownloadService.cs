@@ -86,11 +86,11 @@ public class DownloadService
         }
     }
 
-    public async Task<string?> TryDownloadString(string url, bool blProxy, string userAgent)
+    public async Task<string?> TryDownloadString(string url, bool blProxy, string userAgent, Dictionary<string, string>? headers = null)
     {
         try
         {
-            var result1 = await DownloadStringAsync(url, blProxy, userAgent, 15);
+            var result1 = await DownloadStringAsync(url, blProxy, userAgent, 15, headers);
             if (result1.IsNotEmpty())
             {
                 return result1;
@@ -131,7 +131,7 @@ public class DownloadService
     /// DownloadString
     /// </summary>
     /// <param name="url"></param>
-    private async Task<string?> DownloadStringAsync(string url, bool blProxy, string userAgent, int timeout)
+    private async Task<string?> DownloadStringAsync(string url, bool blProxy, string userAgent, int timeout, Dictionary<string, string>? headers = null)
     {
         try
         {
@@ -147,6 +147,14 @@ public class DownloadService
                 userAgent = Utils.GetVersion(false);
             }
             client.DefaultRequestHeaders.UserAgent.TryParseAdd(userAgent);
+
+            if (headers != null)
+            {
+                foreach (var header in headers)
+                {
+                    client.DefaultRequestHeaders.TryAddWithoutValidation(header.Key, header.Value);
+                }
+            }
 
             Uri uri = new(url);
             //Authorization Header
