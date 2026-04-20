@@ -92,12 +92,17 @@ public static class SubscriptionHandler
 
     private static async Task<string> DownloadSubscriptionContent(DownloadService downloadHandle, string url, bool blProxy, string userAgent)
     {
-        var result = await downloadHandle.TryDownloadString(url, blProxy, userAgent);
+        var headers = new Dictionary<string, string>
+        {
+            ["x-hwid"] = Utils.GetHwid()
+        };
+
+        var result = await downloadHandle.TryDownloadString(url, blProxy, userAgent, headers);
 
         // If download with proxy fails, try direct connection
         if (blProxy && result.IsNullOrEmpty())
         {
-            result = await downloadHandle.TryDownloadString(url, false, userAgent);
+            result = await downloadHandle.TryDownloadString(url, false, userAgent, headers);
         }
 
         return result ?? string.Empty;
