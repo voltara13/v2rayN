@@ -1122,6 +1122,23 @@ public class Utils
 
     public static bool IsNonWindows() => !OperatingSystem.IsWindows();
 
+    public static string GetPlatform()
+    {
+        if (IsWindows())
+        {
+            return "windows";
+        }
+        if (IsLinux())
+        {
+            return "linux";
+        }
+        if (IsMacOS())
+        {
+            return "macos";
+        }
+        return "unknown";
+    }
+
     public static string GetExeName(string name)
     {
         if (name.IsNullOrEmpty() || IsNonWindows())
