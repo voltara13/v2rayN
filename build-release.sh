@@ -18,7 +18,7 @@ echo "    Version set to ${VERSION} in Directory.Build.props"
 
 # Clean previous builds
 rm -rf publish-win64 publish-win-arm64 publish-linux64 publish-linux-arm64
-rm -f v2rayN-windows-64.zip v2rayN-windows-arm64.zip v2rayN-linux-64.zip v2rayN-linux-arm64.zip
+rm -f v2rayN-windows-64-desktop.zip v2rayN-windows-arm64.zip v2rayN-linux-64.zip v2rayN-linux-arm64.zip
 
 # === Build Windows x64 ===
 echo ""
@@ -45,14 +45,14 @@ curl -sL "https://github.com/${CORE_BIN_REPO}/raw/refs/heads/master/v2rayN-windo
 # === Package Windows x64 ===
 echo ""
 echo ">>> Packaging Windows x64..."
-rm -rf v2rayN-windows-64
-mkdir -p v2rayN-windows-64
-cp -r publish-win64/* v2rayN-windows-64/
+rm -rf v2rayN-windows-64-desktop
+mkdir -p v2rayN-windows-64-desktop
+cp -r publish-win64/* v2rayN-windows-64-desktop/
 # Extract core-bin into same folder (contains bin/ subfolder)
 "$SEVENZ" x core-bin-win64.zip -o. -y > /dev/null
-# Now v2rayN-windows-64/bin/ has xray, geo files etc.
-"$SEVENZ" a -tZip "v2rayN-windows-64.zip" "./v2rayN-windows-64" -mx1 > /dev/null
-echo "    Created: v2rayN-windows-64.zip"
+# Now v2rayN-windows-64-desktop/bin/ has xray, geo files etc.
+"$SEVENZ" a -tZip "v2rayN-windows-64-desktop.zip" "./v2rayN-windows-64-desktop" -mx1 > /dev/null
+echo "    Created: v2rayN-windows-64-desktop.zip"
 
 # === Package Windows ARM64 ===
 echo ""
@@ -66,7 +66,7 @@ echo "    Created: v2rayN-windows-arm64.zip"
 
 # === Cleanup ===
 rm -f core-bin-win64.zip core-bin-win-arm64.zip
-rm -rf publish-win64 publish-win-arm64 v2rayN-windows-64 v2rayN-windows-arm64
+rm -rf publish-win64 publish-win-arm64 v2rayN-windows-64-desktop v2rayN-windows-arm64
 
 echo ""
 echo "=== Build complete! ==="
