@@ -9,7 +9,7 @@ public static class ProcUtils
         _ = ProcessStart(fileName, arguments, null);
     }
 
-    public static int? ProcessStart(string? fileName, string arguments, string? dir, bool asAdmin = false)
+    public static int? ProcessStart(string? fileName, string arguments, string? dir)
     {
         if (fileName.IsNullOrEmpty())
         {
@@ -33,8 +33,7 @@ public static class ProcUtils
                     UseShellExecute = true,
                     FileName = fileName,
                     Arguments = arguments,
-                    WorkingDirectory = dir ?? string.Empty,
-                    Verb = asAdmin ? "runas" : null,
+                    WorkingDirectory = dir ?? string.Empty
                 }
             };
             _ = proc.Start();

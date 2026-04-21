@@ -241,11 +241,7 @@ public class CheckUpdateViewModel : MyReactiveObject
                 return;
             }
 
-            var startupPath = Utils.StartupPath();
-            var needElevation = Utils.IsWindows()
-                && !Utils.IsAdministrator()
-                && !Utils.IsDirectoryWritable(startupPath);
-            var id = ProcUtils.ProcessStart(upgradeFileName, fileName, startupPath, needElevation);
+            var id = ProcUtils.ProcessStart(upgradeFileName, fileName, Utils.StartupPath());
             if (id > 0)
             {
                 await AppManager.Instance.AppExitAsync(true);
