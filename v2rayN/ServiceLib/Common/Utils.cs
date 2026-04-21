@@ -1126,17 +1126,30 @@ public class Utils
     {
         if (IsWindows())
         {
-            return "windows";
+            return "Windows";
         }
         if (IsLinux())
         {
-            return "linux";
+            return "Linux";
         }
         if (IsMacOS())
         {
-            return "macos";
+            return "macOS";
         }
         return "unknown";
+    }
+
+    public static string GetPlatformVersion()
+    {
+        try
+        {
+            return Environment.OSVersion.Version.ToString();
+        }
+        catch (Exception ex)
+        {
+            Logging.SaveLog(_tag, ex);
+            return "unknown";
+        }
     }
 
     public static string GetExeName(string name)

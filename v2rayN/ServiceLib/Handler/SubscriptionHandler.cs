@@ -95,8 +95,8 @@ public static class SubscriptionHandler
         var headers = new Dictionary<string, string>
         {
             ["x-hwid"] = Utils.GetHwid(),
-            ["x-platform"] = Utils.GetPlatform(),
-            ["x-app-version"] = Utils.GetVersionInfo(),
+            ["x-device-os"] = Utils.GetPlatform(),
+            ["x-ver-os"] = Utils.GetPlatformVersion(),
             ["x-device-model"] = Environment.MachineName
         };
 
