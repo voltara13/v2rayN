@@ -2,7 +2,7 @@
 set -e
 
 # === Configuration ===
-VERSION="1.0.3"
+VERSION="1.0.5"
 CORE_BIN_REPO="2dust/v2rayN-core-bin"  # Change to your repo if you have custom core-bin
 RELEASE_TAG="v${VERSION}"
 SEVENZ="/c/Program Files/7-Zip/7z.exe"
@@ -48,8 +48,11 @@ echo ">>> Packaging Windows x64..."
 rm -rf v2rayN-windows-64-desktop
 mkdir -p v2rayN-windows-64-desktop
 cp -r publish-win64/* v2rayN-windows-64-desktop/
-# Extract core-bin into same folder (contains bin/ subfolder)
-"$SEVENZ" x core-bin-win64.zip -o. -y > /dev/null
+# Extract core-bin to a temp dir, then flatten its single top-level folder into the package
+rm -rf core-bin-win64-extracted
+"$SEVENZ" x core-bin-win64.zip -o"./core-bin-win64-extracted" -y > /dev/null
+cp -r ./core-bin-win64-extracted/*/. v2rayN-windows-64-desktop/
+rm -rf core-bin-win64-extracted
 # Now v2rayN-windows-64-desktop/bin/ has xray, geo files etc.
 "$SEVENZ" a -tZip "v2rayN-windows-64-desktop.zip" "./v2rayN-windows-64-desktop" -mx1 > /dev/null
 echo "    Created: v2rayN-windows-64-desktop.zip"
@@ -60,7 +63,10 @@ echo ">>> Packaging Windows ARM64..."
 rm -rf v2rayN-windows-arm64
 mkdir -p v2rayN-windows-arm64
 cp -r publish-win-arm64/* v2rayN-windows-arm64/
-"$SEVENZ" x core-bin-win-arm64.zip -o. -y > /dev/null
+rm -rf core-bin-win-arm64-extracted
+"$SEVENZ" x core-bin-win-arm64.zip -o"./core-bin-win-arm64-extracted" -y > /dev/null
+cp -r ./core-bin-win-arm64-extracted/*/. v2rayN-windows-arm64/
+rm -rf core-bin-win-arm64-extracted
 "$SEVENZ" a -tZip "v2rayN-windows-arm64.zip" "./v2rayN-windows-arm64" -mx1 > /dev/null
 echo "    Created: v2rayN-windows-arm64.zip"
 
