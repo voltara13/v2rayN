@@ -1165,6 +1165,26 @@ public class Utils
         return false;
     }
 
+    public static bool IsDirectoryWritable(string path)
+    {
+        if (path.IsNullOrEmpty() || !Directory.Exists(path))
+        {
+            return false;
+        }
+        try
+        {
+            var probe = Path.Combine(path, $".write_probe_{Guid.NewGuid():N}.tmp");
+            using (File.Create(probe, 1, FileOptions.DeleteOnClose))
+            {
+            }
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
     public static bool IsPackagedInstall()
     {
         try
