@@ -1,5 +1,6 @@
 using AwesomeAssertions;
 using ServiceLib.Enums;
+using ServiceLib.Handler;
 using ServiceLib.Handler.Builder;
 using ServiceLib.Helper;
 using ServiceLib.Models;
@@ -9,6 +10,94 @@ namespace ServiceLib.Tests.CoreConfig.Context;
 
 public class CoreConfigContextBuilderTests
 {
+	[Fact]
+	public void GetPreSocksItem_CustomXrayConfigWithTun_ShouldDetectSocksInboundPort()
+	{
+		var config = CoreConfigTestFactory.CreateConfig();
+		config.TunModeItem.EnableTun = true;
+		var fileName = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid():N}.json");
+		File.WriteAllText(fileName, """
+		{
+		  "inbounds": [
+		    {
+		      "tag": "socks",
+		      "port": 10808,
+		      "listen": "0.0.0.0",
+		      "protocol": "socks",
+		      "settings": { "udp": true, "auth": "noauth" }
+		    }
+		  ],
+		  "outbounds": [
+		    { "tag": "proxy", "protocol": "freedom" }
+		  ],
+		  "routing": { "rules": [] }
+		}
+		""");
+		var node = new ProfileItem
+		{
+			ConfigType = EConfigType.Custom,
+			CoreType = ECoreType.Xray,
+			Address = fileName
+		};
+
+		try
+		{
+			var preSocksItem = ConfigHandler.GetPreSocksItem(config, node, ECoreType.Xray);
+
+			preSocksItem.Should().NotBeNull();
+			preSocksItem!.CoreType.Should().Be(ECoreType.sing_box);
+			preSocksItem.ConfigType.Should().Be(EConfigType.SOCKS);
+			preSocksItem.Address.Should().Be(Global.Loopback);
+			preSocksItem.Port.Should().Be(10808);
+		}
+		finally
+		{
+			File.Delete(fileName);
+		}
+	}
+
+	[Fact]
+	public void GetPreSocksItem_CustomXrayConfigWithManualPort_ShouldPreferManualPort()
+	{
+		var config = CoreConfigTestFactory.CreateConfig();
+		config.TunModeItem.EnableTun = true;
+		var fileName = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid():N}.json");
+		File.WriteAllText(fileName, """
+		{
+		  "inbounds": [
+		    {
+		      "port": 10808,
+		      "listen": "0.0.0.0",
+		      "protocol": "socks"
+		    }
+		  ],
+		  "outbounds": [
+		    { "tag": "proxy", "protocol": "freedom" }
+		  ],
+		  "routing": { "rules": [] }
+		}
+		""");
+		var node = new ProfileItem
+		{
+			ConfigType = EConfigType.Custom,
+			CoreType = ECoreType.Xray,
+			Address = fileName,
+			PreSocksPort = 12345
+		};
+
+		try
+		{
+			var preSocksItem = ConfigHandler.GetPreSocksItem(config, node, ECoreType.Xray);
+
+			preSocksItem.Should().NotBeNull();
+			preSocksItem!.Port.Should().Be(12345);
+		}
+		finally
+		{
+			File.Delete(fileName);
+		}
+	}
+
 	[Fact]
 	public async Task ResolveNodeAsync_DirectCycleDependency_ShouldFailWithCycleError()
 	{
@@ -98,6 +187,7 @@ public class CoreConfigContextBuilderTests
 	private static bool ContainsCycleDependencyMessage(string message)
 	{
 		return message.Contains("cycle dependency", StringComparison.OrdinalIgnoreCase)
+			   || message.Contains("цикличес", StringComparison.OrdinalIgnoreCase)
 			   || message.Contains("循环依赖", StringComparison.Ordinal)
 			   || message.Contains("循環依賴", StringComparison.Ordinal);
 	}

@@ -1435,17 +1435,25 @@ public static class ConfigHandler
                 Port = AppManager.Instance.GetLocalPort(EInboundProtocol.socks)
             };
         }
-        else if (node.ConfigType == EConfigType.Custom
-            && node.PreSocksPort is > 0 and <= 65535)
+        else if (node.ConfigType == EConfigType.Custom)
         {
-            var preCoreType = config.TunModeItem.EnableTun ? ECoreType.sing_box : ECoreType.Xray;
-            itemSocks = new ProfileItem()
+            var preSocksPort = CustomConfigHelper.IsValidPort(node.PreSocksPort)
+                ? node.PreSocksPort
+                : config.TunModeItem.EnableTun
+                    ? CustomConfigHelper.GetPreSocksPortFromFile(node.Address)
+                    : null;
+
+            if (CustomConfigHelper.IsValidPort(preSocksPort))
             {
-                CoreType = preCoreType,
-                ConfigType = EConfigType.SOCKS,
-                Address = Global.Loopback,
-                Port = node.PreSocksPort.Value,
-            };
+                var preCoreType = config.TunModeItem.EnableTun ? ECoreType.sing_box : ECoreType.Xray;
+                itemSocks = new ProfileItem()
+                {
+                    CoreType = preCoreType,
+                    ConfigType = EConfigType.SOCKS,
+                    Address = Global.Loopback,
+                    Port = preSocksPort.Value,
+                };
+            }
         }
         return itemSocks;
     }
