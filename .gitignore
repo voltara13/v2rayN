@@ -12,6 +12,7 @@
 *.zip
 
 publish*
+v2rayN-*
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
