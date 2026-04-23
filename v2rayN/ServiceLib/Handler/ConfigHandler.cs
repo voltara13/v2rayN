@@ -1411,7 +1411,7 @@ public static class ConfigHandler
 
     /// <summary>
     /// Get a SOCKS server profile for pre-SOCKS functionality
-    /// Used when TUN mode is enabled or when a custom config has a pre-SOCKS port
+    /// Used when TUN mode is enabled and a custom config must be chained through SOCKS
     /// </summary>
     /// <param name="config">Current configuration</param>
     /// <param name="node">Server node that might need pre-SOCKS</param>
@@ -1435,20 +1435,18 @@ public static class ConfigHandler
                 Port = AppManager.Instance.GetLocalPort(EInboundProtocol.socks)
             };
         }
-        else if (node.ConfigType == EConfigType.Custom)
+        else if (node.ConfigType == EConfigType.Custom
+            && config.TunModeItem.EnableTun)
         {
             var preSocksPort = CustomConfigHelper.IsValidPort(node.PreSocksPort)
                 ? node.PreSocksPort
-                : config.TunModeItem.EnableTun
-                    ? CustomConfigHelper.GetPreSocksPortFromFile(node.Address)
-                    : null;
+                : CustomConfigHelper.GetPreSocksPortFromFile(node.Address);
 
             if (CustomConfigHelper.IsValidPort(preSocksPort))
             {
-                var preCoreType = config.TunModeItem.EnableTun ? ECoreType.sing_box : ECoreType.Xray;
                 itemSocks = new ProfileItem()
                 {
-                    CoreType = preCoreType,
+                    CoreType = ECoreType.sing_box,
                     ConfigType = EConfigType.SOCKS,
                     Address = Global.Loopback,
                     Port = preSocksPort.Value,
