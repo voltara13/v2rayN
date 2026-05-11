@@ -3,7 +3,7 @@ set -e
 
 # === Configuration ===
 VERSION="1.1.0"
-CORE_BIN_REPO="2dust/v2rayN-core-bin"  # Change to your repo if you have custom core-bin
+CORE_BIN_REPO="Fedarisha/v2rayN-core-bin"  # Custom bundle with Fedarisha xray; rebuild via rebuild-core-bin.sh
 RELEASE_TAG="v${VERSION}"
 SEVENZ="/c/Program Files/7-Zip/7z.exe"
 
