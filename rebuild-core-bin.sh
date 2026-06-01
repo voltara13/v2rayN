@@ -2,13 +2,14 @@
 set -e
 
 # Rebuild Fedarisha/v2rayN-core-bin: take upstream 2dust core-bin zips, swap
-# xray.exe with the Fedarisha xray-builds binary, push to master.
+# xray.exe with a locally built Fedarisha/Xray-core-fedarisha binary, push to master.
 #
 # Requirements: bash, curl, python3, gh (authenticated), git
 
 UPSTREAM_REPO="2dust/v2rayN-core-bin"
 TARGET_REPO="Fedarisha/v2rayN-core-bin"
 XRAY_REPO="Fedarisha/xray-builds"
+XRAY_SOURCE_REPO="Fedarisha/Xray-core-fedarisha"
 
 # Allow override of xray release tag; default to latest.
 XRAY_TAG="${1:-}"
@@ -92,8 +93,8 @@ cp ../v2rayN-windows-arm64.zip .
 cat > README.md <<EOF
 # v2rayN-core-bin (Fedarisha)
 
-Repackaged \`${UPSTREAM_REPO}\` bundles with \`xray.exe\` replaced by the
-[Fedarisha/xray-builds](https://github.com/${XRAY_REPO}) fork.
+Repackaged \`${UPSTREAM_REPO}\` bundles with \`xray.exe\` replaced by a
+locally built [Fedarisha/Xray-core-fedarisha](https://github.com/${XRAY_SOURCE_REPO}) binary.
 
 Current xray release: **${XRAY_TAG}**
 
